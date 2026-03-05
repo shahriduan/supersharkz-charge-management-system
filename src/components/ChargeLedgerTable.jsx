@@ -1,5 +1,5 @@
 import { 
-  Box, Container, Paper, Typography, Chip, TableContainer, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Stack, Tooltip, IconButton, Dialog, DialogTitle, Avatar, Divider, DialogContent, DialogContentText, DialogActions, Button
+  Box, Container, Paper, Typography, Chip, TableContainer, Table, TableHead, TableRow, TableCell, TableSortLabel, TableBody, Stack, Tooltip, IconButton, Dialog, DialogTitle, Avatar, Divider, DialogContent, DialogContentText, DialogActions, Button, Grid
 } from '@mui/material';
 import { useState, useMemo } from 'react';
 import { rm } from '../utils/currencyUtils.js';
@@ -8,6 +8,9 @@ import WarningIcon from '@mui/icons-material/Warning';
 import UnpaidIcon from '@mui/icons-material/RadioButtonUnchecked';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+
 
 export default function ChargeLedgerTable({ charges, setCharges, setToast, setModal, setErrors, setForm }) {
   const COLUMNS = [
@@ -20,6 +23,10 @@ export default function ChargeLedgerTable({ charges, setCharges, setToast, setMo
     { id: null, label: 'Status' },
     { id: null, label: 'Actions' },
   ];
+
+  const totalCharged = charges.reduce((s, c) => s + c.charge_amount, 0);
+  const totalPaid = charges.reduce((s, c) => s + c.paid_amount, 0);
+  const totalOutstanding = totalCharged - totalPaid;
 
   const [orderBy, setOrderBy] = useState('date_charged');
   const [order, setOrder]   = useState('desc');
@@ -56,6 +63,19 @@ export default function ChargeLedgerTable({ charges, setCharges, setToast, setMo
     <>
       <Box sx={{ bgcolor: "background.default", minHeight: "calc(100vh - 64px)", py: 4 }}>
         <Container maxWidth="xl">
+          <Grid container spacing={2.5} sx={{ mb: 4 }}>
+            {[
+              { label: 'Total Charged', value: rm(totalCharged), color: '#0284c7', bg: '#e0f2fe', icon: <ReceiptIcon sx={{ color: "#0284c7" }} /> },
+              { label: 'Total Paid', value: rm(totalPaid), color: '#16a34a', bg: '#dcfce7', icon: <CheckIcon sx={{ color: "#16a34a" }} /> },
+              { label: 'Outstanding', value: rm(totalOutstanding), color: '#dc2626', bg: '#fee2e2', icon: <WarningIcon sx={{ color: "#dc2626" }} /> },
+              { label: 'Total Records', value: charges.length, color: '#7c3aed', bg: '#ede9fe', icon: <TrendingUpIcon sx={{ color: "#7c3aed" }} /> },
+            ].map(charge => (
+              <Grid size={{ xs:12, sm: 6, md: 3 }} key={charge.label}>
+                <StatCard {...charge} />
+              </Grid>
+            ))}
+          </Grid>
+
           <Paper sx={{ borderRadius: 3, overflow: "hidden" }}>
             <Box sx={{ px: 3, py: 2.5, display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #f1f5f9" }}>
               <Box>
@@ -93,7 +113,7 @@ export default function ChargeLedgerTable({ charges, setCharges, setToast, setMo
                   {sorted.map((sortedCharge) => (
                     <TableRow key={sortedCharge.charge_id}>
                       <TableCell>
-                        <Typography variant="body2" sx={{ fontFamily: "'DM Mono', monospace", fontWeight: 500, color: "primary.main", fontSize: "0.8rem" }}>
+                        <Typography variant="body2" sx={{ fontFamily: "'DM Mono', monospace", fontWeight: 500, fontSize: "0.8rem" }}>
                           {sortedCharge.charge_id}
                         </Typography>
                       </TableCell>
@@ -180,6 +200,26 @@ export default function ChargeLedgerTable({ charges, setCharges, setToast, setMo
       </Dialog>
     </>
   )
+}
+
+function StatCard({ label, value, icon, color, bg }) {
+  return (
+    <Paper sx={{ p: 2.5, borderRadius: 3, borderLeft: `4px solid ${color}`, height: "100%" }}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Box>
+          <Typography variant="caption" sx={{ color: "text.secondary", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            {label}
+          </Typography>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: "text.primary", mt: 0.5, fontFamily: "'DM Mono', monospace" }}>
+            {value}
+          </Typography>
+        </Box>
+        <Avatar sx={{ bgcolor: bg, width: 48, height: 48 }}>
+          {icon}
+        </Avatar>
+      </Stack>
+    </Paper>
+  );
 }
 
 function StatusChip({ charge }) {
