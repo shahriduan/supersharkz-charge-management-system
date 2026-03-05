@@ -3,6 +3,7 @@ import './App.css'
 import Header from './components/Header';
 import FormDialog from './components/FormDialog';
 import ChargeLedgerTable from './components/ChargeLedgerTable';
+import { Snackbar, Alert } from '@mui/material';
 
 const INITIAL_CHARGES = [
   { charge_id: 'chg_001', charge_amount: 120.00, paid_amount:   0.00, student_id: 'stu_101', date_charged: '2025-01-05' },
@@ -14,7 +15,8 @@ const INITIAL_CHARGES = [
 
 function App() {
   // UI
-  const [modal, setModal]   = useState(null);
+  const [modal, setModal] = useState(null);
+  const [toast, setToast] = useState(null);
 
   // Data
   const [charges, setCharges] = useState(INITIAL_CHARGES);
@@ -33,8 +35,18 @@ function App() {
   return (
     <>
       <Header onOpenFormDialog={openAdd} />
-      <ChargeLedgerTable charges={charges} />
+      <ChargeLedgerTable charges={charges} setCharges={setCharges} setToast={setToast} />
       <FormDialog modal={modal} onCloseModal={closeModal} />
+
+      <Snackbar
+        open={!!toast}
+        autoHideDuration={3000}
+        onClose={() => setToast(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert severity={toast?.sev || "success"} variant="filled" onClose={() => setToast(null)} sx={{ borderRadius: 2 }}>
+          {toast?.msg}
+        </Alert>
+      </Snackbar>
     </>
   )
 }
