@@ -9,7 +9,7 @@ import UnpaidIcon from '@mui/icons-material/RadioButtonUnchecked';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ChargeLedgerTable({ charges, setCharges, setToast }) {
+export default function ChargeLedgerTable({ charges, setCharges, setToast, setModal, setErrors, setForm }) {
   const COLUMNS = [
     { id: 'charge_id', label: 'Charge ID' },
     { id: 'student_id', label: 'Student' },
@@ -33,9 +33,9 @@ export default function ChargeLedgerTable({ charges, setCharges, setToast }) {
   const outstanding = (c) => c.charge_amount - c.paid_amount;
 
   const openEdit = (c) => {
-    // setForm({ ...c, charge_amount: String(c.charge_amount), paid_amount: String(c.paid_amount) });
-    // setErrors({});
-    // setModal({ mode: "edit", id: c.charge_id });
+    setForm({ ...c, charge_amount: String(c.charge_amount), paid_amount: String(c.paid_amount) });
+    setErrors({});
+    setModal({ mode: "edit", id: c.charge_id });
   };
 
   const confirmDelete = () => {
@@ -149,6 +149,7 @@ export default function ChargeLedgerTable({ charges, setCharges, setToast }) {
         </Container>
       </Box>
 
+      {/* Delete dialog confirmation */}
       <Dialog open={!!deleteTgt} onClose={() => setDeleteTgt(null)} maxWidth="xs" fullWidth>
         <DialogTitle sx={{ pb: 1 }}>
           <Stack direction="row" alignItems="center" spacing={1.5}>

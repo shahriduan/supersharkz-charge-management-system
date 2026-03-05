@@ -1,7 +1,6 @@
 import { AppBar, Toolbar, Box, Avatar, Button, Typography } from '@mui/material';
-import AddIcon from "@mui/icons-material/Add";
 
-export default function Header({ onOpenFormDialog }) {
+export default function Header({ children }) {
   return (
     <AppBar position="static" elevation={0}>
       <Toolbar sx={{ py: 1 }}>
@@ -16,13 +15,7 @@ export default function Header({ onOpenFormDialog }) {
             </Typography>
           </Box>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={onOpenFormDialog}
-          sx={{ bgcolor: "rgba(255,255,255,0.15)", "&:hover": { bgcolor: "rgba(255,255,255,0.25)" }, boxShadow: "none", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)" }}>
-          Add Charge
-        </Button>
+        {children}
       </Toolbar>
     </AppBar>
   )
