@@ -122,7 +122,7 @@ export default function ChargeLedgerTable({ charges, setCharges, setToast, setMo
                           label={sortedCharge.student_id}
                           size="small"
                           variant="outlined"
-                          sx={{ fontFamily: "'DM Mono', monospace", fontSize: "0.72rem", borderColor: "#cbd5e1", color: "text.secondary" }}
+                          sx={{ fontFamily: "'DM Mono', monospace", fontSize: "0.85rem", borderColor: "#cbd5e1", color: "text.secondary" }}
                         />
                       </TableCell>
                       <TableCell>
